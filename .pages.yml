@@ -35,6 +35,10 @@ content:
             - Classroom Games
             - Brain Breaks
             - Teacher Tools
+            - Math Resources
+            - Bell Ringers & Warm-Ups
+            - Other Resources
+
       - name: thumbnail
         label: Game Thumbnail
         type: image
