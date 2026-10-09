@@ -161,6 +161,20 @@ content:
   - name: featured
     label: Featured on Homepage
     type: boolean
+    
+  - name: availability
+    label: Game Availability
+    type: select
+    options:
+    values:
+      - Always Free
+      - Free This Month
+      - Paid
+
+  - name: payhip_link
+    label: Payhip Product Link
+    type: string
+
 - name: bell-ringers
   label: Bell Ringers & Warm-Ups
   type: collection
