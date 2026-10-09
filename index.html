@@ -42,11 +42,15 @@ html{scroll-behavior:smooth} .featured-section{padding-top:76px}.text-link{font-
  <section class="section pathways" id="resources" aria-labelledby="pathways-title"><div class="section-top"><div><div class="kicker">What can we help with?</div><h2 id="pathways-title">A little fun. A little less work.</h2><p>Games, generators, and teaching resources—all designed with busy teachers in mind.</p></div></div>
  <div class="pathway-grid">
   <a class="pathway" href="#library"><div class="pathway-symbol" aria-hidden="true">01</div><h3>Classroom Games</h3><p>Whole-class interactive games that work with your own questions.</p><span>Explore games →</span></a>
-  <a class="pathway" href="#library"><div class="pathway-symbol" aria-hidden="true">02</div><h3>Brain Breaks</h3><p>Quick, surprising activities that bring energy back to the room.</p><span>Browse activities →</span></a>
-  <a class="pathway" href="#make-it"><div class="pathway-symbol" aria-hidden="true">03</div><h3>Teacher Tools</h3><p>Create task cards, looping activities, and more using your own content.</p><span>Explore tools →</span></a>
-  <a class="pathway" href="#library"><div class="pathway-symbol" aria-hidden="true">04</div><h3>Warm-Ups & Math</h3><p>Ideas and resources that make class time easier to plan.</p><span>See resources →</span></a>
- </div><p class="pathway-note">More resource collections are on the way. For now, browse what's available below.</p></section>
+  <a class="pathway" href="#resource-library" data-resource-category="Brain Breaks"><div class="pathway-symbol" aria-hidden="true">02</div><h3>Brain Breaks</h3><p>Quick, surprising activities that bring energy back to the room.</p><span>Browse activities →</span></a>
+  <a class="pathway" href="#resource-library" data-resource-category="Teacher Tools"><div class="pathway-symbol" aria-hidden="true">03</div><h3>Teacher Tools</h3><p>Create task cards, looping activities, and more using your own content.</p><span>Explore tools →</span></a>
+  <a class="pathway" href="#resource-library" data-resource-category="Bell Ringers & Warm-Ups"><div class="pathway-symbol" aria-hidden="true">04</div><h3>Warm-Ups & Math</h3><p>Ideas and resources that make class time easier to plan.</p><span>See resources →</span></a>
+ </div><p class="pathway-note">Explore the collections below as new resources are added.</p></section>
  <section class="section" id="library" aria-labelledby="games-title"><div class="section-top"><div><div class="kicker">Browse the library</div><h2 id="games-title">All free interactive games</h2><p>Search for a game or filter by category. No student accounts required.</p></div><span class="count" id="game-count" aria-live="polite">Loading games…</span></div><div class="filters"><label class="search"><span class="sr-only">Search games</span><input id="game-search" type="search" placeholder="Search by game name or description…" autocomplete="off"></label><label><span class="sr-only">Filter by category</span><select id="game-category"><option value="all">All categories</option></select></label></div><div class="game-grid" id="game-grid" aria-live="polite"></div><div id="empty" class="empty">No games match that search. Try another keyword or category!</div></section>
+ <section class="section" id="resource-library" aria-labelledby="resources-title">
+<div class="section-top"><div><div class="kicker">Explore more resources</div><h2 id="resources-title">Tools, brain breaks & teaching resources</h2><p>Find activities you can use online or download for your classroom.</p></div><span class="count" id="resource-count">Loading resources…</span></div>
+<div class="filters"><label class="search"><span class="sr-only">Search resources</span><input id="resource-search" type="search" placeholder="Search resources…" autocomplete="off"></label><label><span class="sr-only">Filter resource type</span><select id="resource-category"><option value="all">All resources</option><option>Brain Breaks</option><option>Teacher Tools</option><option>Bell Ringers &amp; Warm-Ups</option><option>Math Resources</option><option>Other Resources</option></select></label></div>
+<div class="game-grid" id="resource-grid" aria-live="polite"></div><div id="resource-empty" class="empty" style="display:none">Nothing in this collection yet. More resources coming soon.</div></section>
  <section class="support-panel" id="support" aria-labelledby="support-title"><div class="support-copy"><div class="kicker">Keep the creativity going</div><h2 id="support-title">Love the free games?</h2><p>Bright Spark Design is a passion project. Everything here is made to share a little joy with teachers and students. If you'd like to support new creations, there'll be an optional way to do that here soon.</p></div><span class="support-caption">Free to play. Always welcome.</span></section>
 <section class="more" id="about"><div><h2>Made to share a little joy.</h2><p>Bright Spark Design is a growing collection of classroom games and useful teacher tools. Created with real classrooms in mind—and shared because teaching deserves a little more fun and a little less work.</p></div><div class="more-icon" aria-hidden="true"><span class="accent-line"></span></div></section></main>
 <footer class="footer"><div class="container"><span>© <span id="year"></span> <strong>Bright Spark Design</strong> · Made for teachers, with joy.</span><a href="#library">Browse games</a></div></footer>
@@ -60,4 +64,39 @@ function makeCard(game){const card=document.createElement('article');card.classN
 function render(){const query=search.value.trim().toLowerCase(),choice=category.value;const filtered=games.filter(g=>(choice==='all'||g.category===choice)&&[g.title,g.description,g.category].join(' ').toLowerCase().includes(query));grid.replaceChildren(...filtered.map(makeCard));const featured=games.filter(g=>g.featured).slice(0,3);const highlights=featured.length?featured:games.slice(0,3);featuredGrid.replaceChildren(...highlights.map(makeCard));if(!highlights.length){const p=document.createElement('p');p.className='loading-copy';p.textContent='Our first featured games are coming soon.';featuredGrid.append(p)}count.textContent=filtered.length+' '+(filtered.length===1?'game':'games');empty.style.display=filtered.length?'none':'block'}
 async function init(){try{const response=await fetch('/catalog.json',{cache:'no-store'});if(!response.ok)throw Error('Catalog unavailable');const data=await response.json();if(!Array.isArray(data.games))throw Error('Invalid catalog');games=data.games.filter(g=>g&&typeof g.title==='string'&&validPath(g.game_file));const categories=[...new Set(games.map(g=>g.category).filter(Boolean))].sort();for(const name of categories){const option=document.createElement('option');option.value=name;option.textContent=name;category.append(option)}render()}catch(err){featuredGrid.textContent='Our featured games are temporarily unavailable.';count.textContent='Catalog unavailable';empty.textContent='Games are temporarily unavailable. Please check back shortly.';empty.style.display='block';console.error('Could not load game catalog:',err)}}
 search.addEventListener('input',render);category.addEventListener('change',render);init();
+
+// Resource catalog is generated from the five additional Pages CMS collections.
+const resourceGrid=document.getElementById('resource-grid'),resourceSearch=document.getElementById('resource-search'),resourceSelect=document.getElementById('resource-category'),resourceCount=document.getElementById('resource-count'),resourceEmpty=document.getElementById('resource-empty');
+let resources=[];
+function resourceCard(item){
+  const card=document.createElement('article');card.className='game-card';
+  const visual=document.createElement('div');visual.className='game-image';
+  const thumbnail=validPath(item.thumbnail);
+  if(thumbnail){const img=document.createElement('img');img.src=thumbnail;img.alt=item.title+' thumbnail';img.loading='lazy';img.onerror=()=>{visual.replaceChildren();const ph=document.createElement('span');ph.className='placeholder';ph.textContent='BRIGHT SPARK';visual.append(ph)};visual.append(img)}
+  else{const ph=document.createElement('span');ph.className='placeholder';ph.textContent='BRIGHT SPARK';visual.append(ph)}
+  const body=document.createElement('div');body.className='game-content';
+  const badge=document.createElement('span');badge.className='tag';badge.textContent=item.category;
+  const title=document.createElement('h3');title.textContent=item.title;
+  const desc=document.createElement('p');desc.textContent=item.description||'A classroom resource from Bright Spark Design.';
+  const link=document.createElement('a');link.className='btn btn-blue';link.href=validPath(item.resource_file)||'#resource-library';
+  link.textContent=item.resource_type==='interactive'?'Open activity →':'Get resource →';link.target='_blank';link.rel='noopener noreferrer';
+  body.append(badge,title,desc,link);card.append(visual,body);return card;
+}
+function renderResources(){
+  const query=resourceSearch.value.trim().toLowerCase(),choice=resourceSelect.value;
+  const filtered=resources.filter(r=>(choice==='all'||r.category===choice)&&[r.title,r.description,r.category].join(' ').toLowerCase().includes(query));
+  resourceGrid.replaceChildren(...filtered.map(resourceCard));
+  resourceCount.textContent=filtered.length+' '+(filtered.length===1?'resource':'resources');
+  resourceEmpty.style.display=filtered.length?'none':'block';
+}
+async function initResources(){
+  try{const response=await fetch('/resources-catalog.json',{cache:'no-store'});if(!response.ok)throw Error('Resource catalog unavailable');
+  const data=await response.json();if(!Array.isArray(data.resources))throw Error('Invalid resource catalog');
+  resources=data.resources.filter(r=>r&&typeof r.title==='string'&&validPath(r.resource_file));renderResources();}
+  catch(err){resourceCount.textContent='Resources unavailable';resourceEmpty.textContent='Resources are temporarily unavailable. Please try again later.';resourceEmpty.style.display='block';console.error(err)}
+}
+resourceSearch.addEventListener('input',renderResources);resourceSelect.addEventListener('change',renderResources);
+document.querySelectorAll('[data-resource-category]').forEach(a=>a.addEventListener('click',()=>{resourceSelect.value=a.dataset.resourceCategory;renderResources()}));
+initResources();
+
 </script></body></html>
