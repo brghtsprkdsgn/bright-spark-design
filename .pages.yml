@@ -1,55 +1,289 @@
 
+# Bright Spark Design — Pages CMS configuration
+# Existing Classroom Games paths and fields are preserved.
 media:
-  - name: thumbnails
-    label: Game Thumbnails
-    input: images/games
-    output: /images/games
-  - name: games
-    label: HTML Games
-    input: games
-    output: /games
-    extensions: [html]
-
+- name: thumbnails
+  label: Game Thumbnails
+  input: images/games
+  output: /images/games
+- name: games
+  label: HTML Games
+  input: games
+  output: /games
+  extensions:
+  - html
+- name: resource-images
+  label: Resource Thumbnails
+  input: images/resources
+  output: /images/resources
+  categories:
+  - image
+- name: resource-html
+  label: Interactive Resource Files
+  input: resources/interactive
+  output: /resources/interactive
+  extensions:
+  - html
+- name: resource-downloads
+  label: Resource Downloads
+  input: resources/downloads
+  output: /resources/downloads
+  extensions:
+  - pdf
+  - zip
+  - pptx
+  - docx
+  - xlsx
 content:
-  - name: classroom-games
-    label: Classroom Games
-    type: collection
-    path: data/games
-    format: json
-    filename: "{primary}.json"
-    view:
-      primary: title
-    fields:
-      - name: title
-        label: Game Title
-        type: string
-        required: true
-      - name: description
-        label: Description
-        type: text
-      - name: category
-        label: Category
-        type: select
-        options:
-          values:
-            - Classroom Games
-            - Brain Breaks
-            - Teacher Tools
-            - Math Resources
-            - Bell Ringers & Warm-Ups
-            - Other Resources
-
-      - name: thumbnail
-        label: Game Thumbnail
-        type: image
-        options:
-          media: thumbnails
-      - name: game_file
-        label: HTML Game File
-        type: file
-        options:
-          media: games
-          extensions: [html]
-      - name: featured
-        label: Featured on Homepage
-        type: boolean
+- name: classroom-games
+  label: Classroom Games
+  type: collection
+  path: data/games
+  format: json
+  filename: '{primary}.json'
+  view:
+    primary: title
+  fields:
+  - name: title
+    label: Game Title
+    type: string
+    required: true
+  - name: description
+    label: Description
+    type: text
+  - name: category
+    label: Category
+    type: select
+    options:
+      values:
+      - Classroom Games
+      - Brain Breaks
+      - Teacher Tools
+      - Math Resources
+      - Bell Ringers & Warm-Ups
+      - Other Resources
+  - name: thumbnail
+    label: Game Thumbnail
+    type: image
+    options:
+      media: thumbnails
+  - name: game_file
+    label: HTML Game File
+    type: file
+    options:
+      media: games
+      extensions:
+      - html
+  - name: featured
+    label: Featured on Homepage
+    type: boolean
+- name: brain-breaks
+  label: Brain Breaks
+  type: collection
+  path: data/brain-breaks
+  format: json
+  filename: '{primary}.json'
+  view:
+    primary: title
+  fields:
+  - name: title
+    label: Resource Title
+    type: string
+    required: true
+  - name: description
+    label: Description
+    type: text
+  - name: thumbnail
+    label: Thumbnail
+    type: image
+    options:
+      media: resource-images
+  - name: html_file
+    label: Interactive HTML (optional)
+    type: file
+    options:
+      media: resource-html
+      extensions:
+      - html
+  - name: download_file
+    label: Downloadable File (optional)
+    type: file
+    options:
+      media: resource-downloads
+      extensions:
+      - pdf
+      - zip
+      - pptx
+      - docx
+      - xlsx
+  - name: featured
+    label: Featured on Homepage
+    type: boolean
+- name: teacher-tools
+  label: Teacher Tools
+  type: collection
+  path: data/teacher-tools
+  format: json
+  filename: '{primary}.json'
+  view:
+    primary: title
+  fields:
+  - name: title
+    label: Resource Title
+    type: string
+    required: true
+  - name: description
+    label: Description
+    type: text
+  - name: thumbnail
+    label: Thumbnail
+    type: image
+    options:
+      media: resource-images
+  - name: html_file
+    label: Interactive HTML (optional)
+    type: file
+    options:
+      media: resource-html
+      extensions:
+      - html
+  - name: download_file
+    label: Downloadable File (optional)
+    type: file
+    options:
+      media: resource-downloads
+      extensions:
+      - pdf
+      - zip
+      - pptx
+      - docx
+      - xlsx
+  - name: featured
+    label: Featured on Homepage
+    type: boolean
+- name: bell-ringers
+  label: Bell Ringers & Warm-Ups
+  type: collection
+  path: data/bell-ringers
+  format: json
+  filename: '{primary}.json'
+  view:
+    primary: title
+  fields:
+  - name: title
+    label: Resource Title
+    type: string
+    required: true
+  - name: description
+    label: Description
+    type: text
+  - name: thumbnail
+    label: Thumbnail
+    type: image
+    options:
+      media: resource-images
+  - name: html_file
+    label: Interactive HTML (optional)
+    type: file
+    options:
+      media: resource-html
+      extensions:
+      - html
+  - name: download_file
+    label: Downloadable File (optional)
+    type: file
+    options:
+      media: resource-downloads
+      extensions:
+      - pdf
+      - zip
+      - pptx
+      - docx
+      - xlsx
+  - name: featured
+    label: Featured on Homepage
+    type: boolean
+- name: math-resources
+  label: Math Resources
+  type: collection
+  path: data/math-resources
+  format: json
+  filename: '{primary}.json'
+  view:
+    primary: title
+  fields:
+  - name: title
+    label: Resource Title
+    type: string
+    required: true
+  - name: description
+    label: Description
+    type: text
+  - name: thumbnail
+    label: Thumbnail
+    type: image
+    options:
+      media: resource-images
+  - name: html_file
+    label: Interactive HTML (optional)
+    type: file
+    options:
+      media: resource-html
+      extensions:
+      - html
+  - name: download_file
+    label: Downloadable File (optional)
+    type: file
+    options:
+      media: resource-downloads
+      extensions:
+      - pdf
+      - zip
+      - pptx
+      - docx
+      - xlsx
+  - name: featured
+    label: Featured on Homepage
+    type: boolean
+- name: other-resources
+  label: Other Resources
+  type: collection
+  path: data/other-resources
+  format: json
+  filename: '{primary}.json'
+  view:
+    primary: title
+  fields:
+  - name: title
+    label: Resource Title
+    type: string
+    required: true
+  - name: description
+    label: Description
+    type: text
+  - name: thumbnail
+    label: Thumbnail
+    type: image
+    options:
+      media: resource-images
+  - name: html_file
+    label: Interactive HTML (optional)
+    type: file
+    options:
+      media: resource-html
+      extensions:
+      - html
+  - name: download_file
+    label: Downloadable File (optional)
+    type: file
+    options:
+      media: resource-downloads
+      extensions:
+      - pdf
+      - zip
+      - pptx
+      - docx
+      - xlsx
+  - name: featured
+    label: Featured on Homepage
+    type: boolean
