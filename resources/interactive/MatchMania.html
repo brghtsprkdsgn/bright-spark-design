@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Match Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1500px;
+            width: 100%;
+            overflow: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .theme-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .card-count-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .card-count-selector label {
+            font-size: 16px;
+        }
+
+        .card-count-selector select {
+            padding: 8px 12px;
+            font-size: 16px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            background: white;
+            color: #667eea;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .card-count-selector select:hover {
+            background: #f7fafc;
+        }
+
+        .theme-btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .theme-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .theme-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .new-game-btn {
+            padding: 12px 30px;
+            font-size: 18px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .new-game-btn:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            color: #667eea;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .game-board {
+            display: grid;
+            gap: 15px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            max-width: 100%;
+        }
+
+        .game-board.cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .game-board.cols-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .game-board.cols-5 {
+            grid-template-columns: repeat(5, 1fr);
+        }
+
+        .card {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(2em, 8vw, 4em);
+            transition: transform 0.3s;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card.flipped {
+            background: white;
+            border: 3px solid #667eea;
+        }
+
+        .card.matched {
+            background: #48bb78;
+            cursor: default;
+            border: 3px solid #38a169;
+        }
+
+        .card.matched:hover {
+            transform: none;
+        }
+
+        .card-back {
+            color: white;
+            font-size: 3em;
+        }
+        .card-number {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.4em;
+    font-weight: bold;
+}
+
+        .card-front {
+            display: none;
+        }
+
+        .card.flipped .card-back {
+            display: none;
+        }
+
+        .card.flipped .card-front {
+            display: block;
+        }
+
+        .card.matched .card-back {
+            display: none;
+        }
+
+        .card.matched .card-front {
+            display: block;
+        }
+
+        .winner-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .winner-message.show {
+            display: block;
+            animation: popup 0.5s ease-out;
+        }
+
+        @keyframes popup {
+            0% {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .winner-message h2 {
+            color: #48bb78;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .winner-message p {
+            color: #667eea;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .game-board {
+                gap: 10px;
+                padding: 15px;
+            }
+
+            .card {
+                font-size: 2.5em;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <img src="title.png" alt="Match Mania" style="max-width: 100%; height: auto; max-height: 500px;">
+        </div>
+        
+        <div class="controls">
+            <div class="theme-selector">
+                <button class="theme-btn active" data-theme="faces">😀 Face Emojis</button>
+                <button class="theme-btn" data-theme="animals">🐶 Animals</button>
+                <button class="theme-btn" data-theme="food">🍕 Food</button>
+            </div>
+            
+            <div class="card-count-selector">
+                <label for="cardCount">Number of Cards:</label>
+                <select id="cardCount" onchange="newGame()">
+                    <option value="6">6 cards (3 pairs)</option>
+                    <option value="8">8 cards (4 pairs)</option>
+                    <option value="10">10 cards (5 pairs)</option>
+                    <option value="12">12 cards (6 pairs)</option>
+                    <option value="16" selected>16 cards (8 pairs)</option>
+                    <option value="20">20 cards (10 pairs)</option>
+                </select>
+            </div>
+            
+            <div class="game-controls">
+                <button class="new-game-btn" onclick="newGame()">New Game</button>
+            </div>
+            
+            <div class="stats">
+                <div>Moves: <span id="moves">0</span></div>
+                <div>Matches: <span id="matches">0</span>/<span id="totalPairs">8</span></div>
+            </div>
+        </div>
+
+        <div class="game-board" id="gameBoard"></div>
+    </div>
+
+    <div class="winner-message" id="winnerMessage">
+        <h2>🎉 Congratulations! 🎉</h2>
+        <p>You found all the matches!</p>
+        <p>Total Moves: <span id="finalMoves"></span></p>
+        <button class="new-game-btn" onclick="newGame()">Play Again</button>
+    </div>
+
+    <script>
+        const themes = {
+            faces: ['😀', '😂', '😍', '🥳', '😎', '🤔', '😴', '🤗', '😇', '🤩'],
+            animals: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯'],
+            food: ['🍕', '🍔', '🍟', '🌭', '🍿', '🧁', '🍩', '🍪', '🍦', '🌮']
+        };
+
+        let currentTheme = 'faces';
+        let cards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let moves = 0;
+        let canFlip = true;
+        let totalPairs = 8;
+
+        // Theme selection
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentTheme = this.dataset.theme;
+                newGame();
+            });
+        });
+
+        function shuffle(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function getGridColumns(cardCount) {
+            if (cardCount === 6) return 'cols-3';   // 3x2
+    if (cardCount === 8) return 'cols-4';   // 4x2
+    if (cardCount === 10) return 'cols-5';  // 5x2
+    if (cardCount === 12) return 'cols-4';  // 4x3
+    if (cardCount === 16) return 'cols-4';  // 4x4
+    if (cardCount === 20) return 'cols-5';  // 5x4
+        }
+
+        function createBoard() {
+            const gameBoard = document.getElementById('gameBoard');
+            gameBoard.innerHTML = '';
+            
+            const cardCount = parseInt(document.getElementById('cardCount').value);
+            totalPairs = cardCount / 2;
+            
+            // Update grid layout
+            gameBoard.className = 'game-board ' + getGridColumns(cardCount);
+            
+            const themeImages = themes[currentTheme];
+            const pairsNeeded = totalPairs;
+            const selectedImages = themeImages.slice(0, pairsNeeded);
+            const cardPairs = [...selectedImages, ...selectedImages];
+            cards = shuffle(cardPairs);
+
+            cards.forEach((image, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.dataset.index = index;
+                card.dataset.image = image;
+                card.innerHTML = `
+                <div class="card-back">
+            <div class="card-number">${index + 1}</div>
+        </div>
+        <div class="card-front">${image}</div>
+                `;
+                card.addEventListener('click', flipCard);
+                gameBoard.appendChild(card);
+            });
+            
+            document.getElementById('totalPairs').textContent = totalPairs;
+        }
+
+        function flipCard() {
+            if (!canFlip) return;
+            if (this.classList.contains('flipped') || this.classList.contains('matched')) return;
+            if (flippedCards.length >= 2) return;
+
+            this.classList.add('flipped');
+            flippedCards.push(this);
+
+            if (flippedCards.length === 2) {
+                moves++;
+                document.getElementById('moves').textContent = moves;
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            canFlip = false;
+            const [card1, card2] = flippedCards;
+
+            if (card1.dataset.image === card2.dataset.image) {
+                setTimeout(() => {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                    card1.classList.add('matched');
+                    card2.classList.add('matched');
+                    matchedPairs++;
+                    document.getElementById('matches').textContent = matchedPairs;
+                    flippedCards = [];
+                    canFlip = true;
+
+                    if (matchedPairs === totalPairs) {
+                        setTimeout(showWinner, 500);
+                    }
+                }, 500);
+            } else {
+                setTimeout(() => {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                    flippedCards = [];
+                    canFlip = true;
+                }, 1000);
+            }
+        }
+
+        function showWinner() {
+            document.getElementById('finalMoves').textContent = moves;
+            document.getElementById('winnerMessage').classList.add('show');
+        }
+
+        function newGame() {
+            flippedCards = [];
+            matchedPairs = 0;
+            moves = 0;
+            canFlip = true;
+            document.getElementById('moves').textContent = '0';
+            document.getElementById('matches').textContent = '0';
+            document.getElementById('winnerMessage').classList.remove('show');
+            createBoard();
+        }
+
+        // Initialize game
+        newGame();
+    </script>
+</body>
+</html>
