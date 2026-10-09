@@ -1,0 +1,51 @@
+
+media:
+  - name: thumbnails
+    label: Game Thumbnails
+    input: images/games
+    output: /images/games
+  - name: games
+    label: HTML Games
+    input: games
+    output: /games
+    extensions: [html]
+
+content:
+  - name: classroom-games
+    label: Classroom Games
+    type: collection
+    path: data/games
+    format: json
+    filename: "{primary}.json"
+    view:
+      primary: title
+    fields:
+      - name: title
+        label: Game Title
+        type: string
+        required: true
+      - name: description
+        label: Description
+        type: text
+      - name: category
+        label: Category
+        type: select
+        options:
+          values:
+            - Classroom Games
+            - Brain Breaks
+            - Teacher Tools
+      - name: thumbnail
+        label: Game Thumbnail
+        type: image
+        options:
+          media: thumbnails
+      - name: game_file
+        label: HTML Game File
+        type: file
+        options:
+          media: games
+          extensions: [html]
+      - name: featured
+        label: Featured on Homepage
+        type: boolean
